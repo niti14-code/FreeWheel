@@ -51,10 +51,21 @@ exports.searchRides = async (req, res) => {
 
 exports.getRide = async (req, res) => {
   try {
+    console.log('=== DEBUG getRide ===');
+    console.log('req.params:', req.params);
+    console.log('req.params.id:', req.params.id);
+    console.log('req.user:', req.user);
+    console.log('Full URL:', req.originalUrl);
+    
     const ride = await Ride.findById(req.params.id).populate('providerId', 'name phone rating');
+    
+    console.log('Ride found:', ride);
+    console.log('====================');
+    
     if (!ride) return res.status(404).json({ message: 'Ride not found' });
     res.json(ride);
   } catch (error) {
+    console.log('Error in getRide:', error.message);
     res.status(500).json({ message: error.message });
   }
 };
