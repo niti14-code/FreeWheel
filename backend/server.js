@@ -15,6 +15,16 @@ app.get('/', (req, res) => {
   res.json({ message: 'FreeWheels API is running!' });
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK',
+    message: 'FreeWheels API is running',
+    timestamp: new Date().toISOString(),
+    database: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
+  });
+});
+
 // Routes come AFTER
 app.use('/auth', require('./auth/auth.routes'));
 app.use('/users', require('./users/users.routes'));
