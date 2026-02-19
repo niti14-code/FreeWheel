@@ -10,7 +10,10 @@ const app = express();
 
 // These TWO lines MUST come BEFORE routes
 app.use(cors());
-app.use(express.json());  // ← This parses JSON body
+app.use(express.json());  
+app.get('/', (req, res) => {
+  res.json({ message: 'FreeWheels API is running!' });
+});
 
 // Routes come AFTER
 app.use('/auth', require('./auth/auth.routes'));
