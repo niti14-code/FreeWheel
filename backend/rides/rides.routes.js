@@ -9,5 +9,6 @@ router.get('/search', auth, controller.searchRides);
 router.get('/:id', auth, controller.getRide);
 router.put('/:id', auth, controller.updateRide);
 router.delete('/:id', auth, controller.deleteRide);
+router.get('/my', auth, controller.getMyRides);
 
 module.exports = router;
