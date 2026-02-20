@@ -91,3 +91,15 @@ exports.deleteRide = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// Get my rides (for provider)
+exports.getMyRides = async (req, res) => {
+  try {
+    const rides = await Ride.find({ providerId: req.user.userId })
+      .sort({ createdAt: -1 });
+    
+    res.json(rides);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
