@@ -10,7 +10,24 @@ const app = express();
 
 // These TWO lines MUST come BEFORE routes
 app.use(cors());
+<<<<<<< HEAD
 app.use(express.json());  // ← This parses JSON body
+=======
+app.use(express.json());  
+app.get('/', (req, res) => {
+  res.json({ message: 'FreeWheels API is running!' });
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK',
+    message: 'FreeWheels API is running',
+    timestamp: new Date().toISOString(),
+    database: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
+  });
+});
+>>>>>>> 8259ddb3104023d57f4877692e8a84b1b040f127
 
 // Routes come AFTER
 app.use('/auth', require('./auth/auth.routes'));
