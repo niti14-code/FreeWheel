@@ -49,3 +49,69 @@ exports.respondBooking = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// Get my bookings (for seeker)
+exports.getMyBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ seekerId: req.user.userId })
+      .populate('rideId', 'pickup drop date time costPerSeat status')
+      .populate('rideId.providerId', 'name phone')
+      .sort({ createdAt: -1 });
+    
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get ride requests (for provider)
+exports.getRideRequests = async (req, res) => {
+  try {
+    // Get all rides by this provider
+    const rides = await Ride.find({ providerId: req.user.userId });
+    const rideIds = rides.map(r => r._id);
+    
+    // Get all bookings for these rides
+    const bookings = await Booking.find({ rideId: { $in: rideIds } })
+      .populate('rideId', 'pickup drop date time')
+      .populate('seekerId', 'name phone rating college')
+      .sort({ createdAt: -1 });
+    
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+exports.getMyBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ seekerId: req.user.userId })
+      .populate('rideId', 'pickup drop date time costPerSeat status')
+      .populate('rideId.providerId', 'name phone')
+      .sort({ createdAt: -1 });
+    
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getBookingsForRide = async (req, res) => {
+  try {
+    const { rideId } = req.params;
+    
+    // Verify provider owns this ride
+    const ride = await Ride.findOne({ _id: rideId, providerId: req.user.userId });
+    if (!ride) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+    
+    const bookings = await Booking.find({ rideId })
+      .populate('seekerId', 'name phone rating college')
+      .sort({ createdAt: -1 });
+    
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
